@@ -1,0 +1,23 @@
+[
+  {
+    "id": "1",
+    "name": "John",
+    "lastname": "Wick",
+    "email": "john@wick.com",
+    "phone": "595 115 0804"
+  },
+  {
+    "id": "2",
+    "name": "Johny",
+    "lastname": "Wicka",
+    "email": "john2@wick.com",
+    "phone": "595 225 0804"
+  },
+  {
+    "id": "3",
+    "name": "Johno",
+    "lastname": "Wicko",
+    "email": "john3@wick.com",
+    "phone": "595 335 0804"
+  }
+]

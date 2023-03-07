@@ -1,0 +1,40 @@
+createNotification:
+  handler: src/functions/notification/createNotification.handler
+  events:
+    - http:
+        method: post
+        path: notifications
+        cors: true
+        private: true
+getAllNotifications:
+  handler: src/functions/notification/getAllNotifications.handler
+  events:
+    - http:
+        method: get
+        path: notifications
+        cors: true
+        private: true
+getNotification:
+  handler: src/functions/notification/getNotification.handler
+  events:
+    - http:
+        method: get
+        path: notifications/{id}
+        cors: true
+        private: true
+updateNotification:
+  handler: src/functions/notification/updateNotification.handler
+  events:
+    - http:
+        method: put
+        path: notifications/{id}
+        cors: true
+        private: true
+deleteNotification:
+  handler: src/functions/notification/deleteNotification.handler
+  events:
+    - http:
+        method: delete
+        path: notifications/{id}
+        cors: true
+        private: true

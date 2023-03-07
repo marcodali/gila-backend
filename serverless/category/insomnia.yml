@@ -1,0 +1,190 @@
+_type: export
+__export_format: 4
+__export_date: 2023-03-07T17:26:13.702Z
+__export_source: insomnia.desktop.app:v2022.7.1
+resources:
+  - _id: wrk_59669c6e2236420eab91be117764a195
+    parentId: null
+    modified: 1678209973703
+    created: 1678209973702
+    name: Gila-backend
+    description: ""
+    scope: collection
+    _type: workspace
+  - _id: env_84119d9d8fda44d7a07d071de003b90c
+    parentId: wrk_59669c6e2236420eab91be117764a195
+    modified: 1678209973703
+    created: 1678209973702
+    name: Base Environment
+    data: {}
+    dataPropertyOrder: null
+    color: null
+    isPrivate: false
+    metaSortKey: -358000000
+    _type: environment
+  - _id: spc_c48a75a973144f2894bd7b6427cdc5cf
+    parentId: wrk_59669c6e2236420eab91be117764a195
+    modified: 1678209973703
+    created: 1678209973702
+    fileName: Gila-backend
+    contents: ""
+    contentType: yaml
+    _type: api_spec
+  - _id: fld_646b327265274e69921caa4923b7e49b
+    parentId: wrk_59669c6e2236420eab91be117764a195
+    modified: 1678209973703
+    created: 1678209973702
+    name: Category
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -971000000
+    _type: request_group
+  - _id: req_c51de11b2ce845b6809046b62ca8cff6
+    parentId: fld_646b327265274e69921caa4923b7e49b
+    modified: 1678209973703
+    created: 1678209973702
+    url: "{{ _.amazonURL }}/{{ _.stage }}/categories"
+    name: Category
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: >-
+        {
+        	"name": "Elizabeth",
+        	"city": "Medellin",
+        	"age": 23,
+        	"description": "Me encanta bailar salsa",
+        	"activities": ["d92b4a14-def9-4df9-91f3-6b2e021c0d36"],
+        	"phone": "5544623411",
+        	"email": "eli.medallo@gmail.com"
+        }
+    parameters: []
+    headers:
+      - id: pair_1b556ff70b7c4448896ea6dc6551518e
+        name: x-api-key
+        value: "{{ _.apiKey }}"
+        description: ""
+      - name: Content-Type
+        value: application/json
+    authentication: {}
+    metaSortKey: -651000000
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_9402cc4c5be347b99676c012b57800c6
+    parentId: fld_646b327265274e69921caa4923b7e49b
+    modified: 1678209973703
+    created: 1678209973702
+    url: "{{ _.amazonURL }}/{{ _.stage
+      }}/categories/my-id"
+    name: Category
+    description: ""
+    method: PUT
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"phone": "552362231",
+        	"email": "geral.medallo@gmail.com"
+        }
+    parameters: []
+    headers:
+      - id: pair_1b556ff70b7c4448896ea6dc6551518e
+        name: x-api-key
+        value: "{{ _.apiKey }}"
+        description: ""
+      - name: Content-Type
+        value: application/json
+    authentication: {}
+    metaSortKey: -807000000
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_8724e7104a3d4c4a909d3a242f920fd9
+    parentId: fld_646b327265274e69921caa4923b7e49b
+    modified: 1678209973703
+    created: 1678209973702
+    url: "{{ _.amazonURL }}/{{ _.stage }}/categories"
+    name: All Categories
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_1b556ff70b7c4448896ea6dc6551518e
+        name: x-api-key
+        value: "{{ _.apiKey }}"
+        description: ""
+    authentication: {}
+    metaSortKey: -132000000
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_5198a1113a5844b49f239a72aae3d0f1
+    parentId: fld_646b327265274e69921caa4923b7e49b
+    modified: 1678209973703
+    created: 1678209973702
+    url: "{{ _.amazonURL }}/{{ _.stage
+      }}/categories/my-id"
+    name: Category ID
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_1b556ff70b7c4448896ea6dc6551518e
+        name: x-api-key
+        value: "{{ _.apiKey }}"
+        description: ""
+    authentication: {}
+    metaSortKey: -873000000
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_7e44ef643238431994df997f6b6805c2
+    parentId: fld_646b327265274e69921caa4923b7e49b
+    modified: 1678209973703
+    created: 1678209973702
+    url: "{{ _.amazonURL }}/{{ _.stage }}/categories/my-id"
+    name: Category ID
+    description: ""
+    method: DELETE
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_1b556ff70b7c4448896ea6dc6551518e
+        name: x-api-key
+        value: "{{ _.apiKey }}"
+        description: ""
+    authentication: {}
+    metaSortKey: -803000000
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request

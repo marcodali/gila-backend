@@ -1,0 +1,224 @@
+_type: export
+__export_format: 4
+__export_date: 2023-03-07T08:10:56.645Z
+__export_source: insomnia.desktop.app:v2022.7.1
+resources:
+  - _id: wrk_59669c6e2236420eab91be117764a195
+    parentId: null
+    modified: 1678176656646
+    created: 1678176656645
+    name: Gila-backend
+    description: ""
+    scope: collection
+    _type: workspace
+  - _id: env_84119d9d8fda44d7a07d071de003b90c
+    parentId: wrk_59669c6e2236420eab91be117764a195
+    modified: 1678176656646
+    created: 1678176656645
+    name: Base Environment
+    data: {}
+    dataPropertyOrder: {}
+    color: null
+    isPrivate: false
+    metaSortKey: -1500000
+    _type: environment
+  - _id: env_cf81041ecb854b7ba8727501401f4502
+    parentId: env_84119d9d8fda44d7a07d071de003b90c
+    modified: 1678176656646
+    created: 1678176656645
+    name: Amazon
+    data:
+      amazonURL: https://my-amazon-url.execute-api.us-east-1.amazonaws.com
+      stage: dev
+      apiKey: "my-amazon-api-key"
+    dataPropertyOrder:
+      "&":
+        - amazonURL
+        - stage
+        - apiKey
+    color: "#df308d"
+    isPrivate: false
+    metaSortKey: -1100000
+    _type: environment
+  - _id: env_b91305b50c7641e8b70af9b162a99672
+    parentId: env_84119d9d8fda44d7a07d071de003b90c
+    modified: 1678176656646
+    created: 1678176656645
+    name: local
+    data:
+      amazonURL: http://localhost:3003
+      stage: dev
+      apiKey: my-local-api-key
+    dataPropertyOrder:
+      "&":
+        - amazonURL
+        - stage
+        - apiKey
+    color: "#1358c9"
+    isPrivate: false
+    metaSortKey: -1900000
+    _type: environment
+  - _id: spc_c48a75a973144f2894bd7b6427cdc5cf
+    parentId: wrk_59669c6e2236420eab91be117764a195
+    modified: 1678176656646
+    created: 1678176656645
+    fileName: Gila-backend
+    contents: ""
+    contentType: yaml
+    _type: api_spec
+  - _id: fld_53c43d05e4b24462a4a6d19d48f5e4cc
+    parentId: wrk_59669c6e2236420eab91be117764a195
+    modified: 1678176656646
+    created: 1678176656645
+    name: User
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -90000000
+    _type: request_group
+  - _id: req_2aef3a7a6a2f4ec297eff6febc8a4377
+    parentId: fld_53c43d05e4b24462a4a6d19d48f5e4cc
+    modified: 1678176656646
+    created: 1678176656645
+    url: "{{ _.amazonURL }}/{{ _.stage }}/users"
+    name: User
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: >-
+        {
+        	"description": "In Colombia we love soccer so",
+        	"category": "a1c5abb7-50e4-4ae4-96a8-c36e96ba3df2",
+        	"name": "Independiente Medellin Soccer Game",
+        	"hoursOfService": 6,
+        	"date": "Fri Nov 11 2022"
+        }
+    parameters: []
+    headers:
+      - id: pair_1b556ff70b7c4448896ea6dc6551518e
+        name: x-api-key
+        value: "{{ _.apiKey }}"
+        description: ""
+      - name: Content-Type
+        value: application/json
+    authentication: {}
+    metaSortKey: -8000000
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_f701f4256674469e98c9a167372e1b58
+    parentId: fld_53c43d05e4b24462a4a6d19d48f5e4cc
+    modified: 1678176656646
+    created: 1678176656645
+    url: "{{ _.amazonURL }}/{{ _.stage
+      }}/users/my-id"
+    name: User
+    description: ""
+    method: PUT
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"category": "ya bajale",
+        	"gallery": false
+        }
+    parameters: []
+    headers:
+      - id: pair_1b556ff70b7c4448896ea6dc6551518e
+        name: x-api-key
+        value: "{{ _.apiKey }}"
+        description: ""
+      - name: Content-Type
+        value: application/json
+    authentication: {}
+    metaSortKey: -17700000
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_f115aa7242b9430682b597a678b400aa
+    parentId: fld_53c43d05e4b24462a4a6d19d48f5e4cc
+    modified: 1678176656646
+    created: 1678176656645
+    url: "{{ _.amazonURL }}/{{ _.stage }}/users"
+    name: All Users
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_1b556ff70b7c4448896ea6dc6551518e
+        name: x-api-key
+        value: "{{ _.apiKey }}"
+        description: ""
+    authentication: {}
+    metaSortKey: -22500000
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_48fc0ea096554ca0918b4b02ac3df705
+    parentId: fld_53c43d05e4b24462a4a6d19d48f5e4cc
+    modified: 1678176656646
+    created: 1678176656645
+    url: "{{ _.amazonURL }}/{{ _.stage
+      }}/users/my-id"
+    name: User ID
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_1b556ff70b7c4448896ea6dc6551518e
+        name: x-api-key
+        value: "{{ _.apiKey }}"
+        description: ""
+    authentication: {}
+    metaSortKey: -12900000
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_f61eb47811134845ada9748f1f58a6af
+    parentId: fld_53c43d05e4b24462a4a6d19d48f5e4cc
+    modified: 1678176656646
+    created: 1678176656645
+    url: "{{ _.amazonURL }}/{{ _.stage }}/users/my-id"
+    name: User ID
+    description: ""
+    method: DELETE
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_1b556ff70b7c4448896ea6dc6551518e
+        name: x-api-key
+        value: "{{ _.apiKey }}"
+        description: ""
+    authentication: {}
+    metaSortKey: -152100000
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request

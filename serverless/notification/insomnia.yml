@@ -1,0 +1,190 @@
+_type: export
+__export_format: 4
+__export_date: 2023-03-07T17:27:03.139Z
+__export_source: insomnia.desktop.app:v2022.7.1
+resources:
+  - _id: wrk_59669c6e2236420eab91be117764a195
+    parentId: null
+    modified: 1678210023140
+    created: 1678210023139
+    name: Gila-backend
+    description: ""
+    scope: collection
+    _type: workspace
+  - _id: env_84119d9d8fda44d7a07d071de003b90c
+    parentId: wrk_59669c6e2236420eab91be117764a195
+    modified: 1678210023140
+    created: 1678210023139
+    name: Base Environment
+    data: {}
+    dataPropertyOrder: null
+    color: null
+    isPrivate: false
+    metaSortKey: -358000000
+    _type: environment
+  - _id: spc_c48a75a973144f2894bd7b6427cdc5cf
+    parentId: wrk_59669c6e2236420eab91be117764a195
+    modified: 1678210023140
+    created: 1678210023139
+    fileName: Gila-backend
+    contents: ""
+    contentType: yaml
+    _type: api_spec
+  - _id: fld_efc8a9dc388d4fad9e2106070b65004f
+    parentId: wrk_59669c6e2236420eab91be117764a195
+    modified: 1678210023140
+    created: 1678210023139
+    name: Notification
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -971000000
+    _type: request_group
+  - _id: req_737a73b9036544cf806346fee53c038f
+    parentId: fld_efc8a9dc388d4fad9e2106070b65004f
+    modified: 1678210023140
+    created: 1678210023139
+    url: "{{ _.amazonURL }}/{{ _.stage }}/notifications"
+    name: Notification
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: >-
+        {
+        	"name": "Elizabeth",
+        	"city": "Medellin",
+        	"age": 23,
+        	"description": "Me encanta bailar salsa",
+        	"activities": ["d92b4a14-def9-4df9-91f3-6b2e021c0d36"],
+        	"phone": "5544623411",
+        	"email": "eli.medallo@gmail.com"
+        }
+    parameters: []
+    headers:
+      - id: pair_1b556ff70b7c4448896ea6dc6551518e
+        name: x-api-key
+        value: "{{ _.apiKey }}"
+        description: ""
+      - name: Content-Type
+        value: application/json
+    authentication: {}
+    metaSortKey: -651000000
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_c427b1bef11d487fb605f09a93092b0e
+    parentId: fld_efc8a9dc388d4fad9e2106070b65004f
+    modified: 1678210023140
+    created: 1678210023139
+    url: "{{ _.amazonURL }}/{{ _.stage
+      }}/notifications/my-id"
+    name: Notification
+    description: ""
+    method: PUT
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"phone": "552362231",
+        	"email": "geral.medallo@gmail.com"
+        }
+    parameters: []
+    headers:
+      - id: pair_1b556ff70b7c4448896ea6dc6551518e
+        name: x-api-key
+        value: "{{ _.apiKey }}"
+        description: ""
+      - name: Content-Type
+        value: application/json
+    authentication: {}
+    metaSortKey: -807000000
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_50c6b4c4aedf4e0bafec3bde926f5c4f
+    parentId: fld_efc8a9dc388d4fad9e2106070b65004f
+    modified: 1678210023140
+    created: 1678210023139
+    url: "{{ _.amazonURL }}/{{ _.stage }}/notifications"
+    name: All Notifications
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_1b556ff70b7c4448896ea6dc6551518e
+        name: x-api-key
+        value: "{{ _.apiKey }}"
+        description: ""
+    authentication: {}
+    metaSortKey: -132000000
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_eab093885a074b1e815263c56a334e70
+    parentId: fld_efc8a9dc388d4fad9e2106070b65004f
+    modified: 1678210023140
+    created: 1678210023139
+    url: "{{ _.amazonURL }}/{{ _.stage
+      }}/notifications/my-id"
+    name: Notification ID
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_1b556ff70b7c4448896ea6dc6551518e
+        name: x-api-key
+        value: "{{ _.apiKey }}"
+        description: ""
+    authentication: {}
+    metaSortKey: -873000000
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_01ac16fbd16f4989b1f4a4b07dbc9ee0
+    parentId: fld_efc8a9dc388d4fad9e2106070b65004f
+    modified: 1678210023140
+    created: 1678210023139
+    url: "{{ _.amazonURL }}/{{ _.stage }}/notifications/my-id"
+    name: Notification ID
+    description: ""
+    method: DELETE
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_1b556ff70b7c4448896ea6dc6551518e
+        name: x-api-key
+        value: "{{ _.apiKey }}"
+        description: ""
+    authentication: {}
+    metaSortKey: -803000000
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request

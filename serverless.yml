@@ -1,0 +1,94 @@
+service: gila-backend
+frameworkVersion: '3'
+plugins:
+  - serverless-webpack
+  - serverless-dynamodb-local
+  - serverless-offline
+custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules:
+      forceExclude:
+        - aws-sdk
+    packager: npm
+    concurrency: 4
+  serverless-offline:
+    httpPort: 3003
+  dynamodb:
+    start:
+      port: 5000
+      inMemory: true
+      migrate: true
+      seed: true
+    seed:
+      test:
+        sources:
+          - table: ${self:provider.environment.USERS_TABLE}
+            sources:
+              - ./test/users.json
+          - table: ${self:provider.environment.CATEGORIES_TABLE}
+            sources:
+              - ./test/categories.json
+          - table: ${self:provider.environment.NOTIFICATIONS_TABLE}
+            sources:
+              - ./test/notifications.json
+          - table: ${self:provider.environment.EVENTS_TABLE}
+            sources:
+              - ./test/events.json
+    stages:
+      - dev
+package:
+  individually: true
+provider:
+  name: aws
+  runtime: nodejs18.x
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-1'}
+  apiGateway:
+    apiKeys:
+      - ${self:provider.stage}-gila-backend
+    usagePlan:
+      quota:
+        limit: 1000
+        offset: 0
+        period: DAY
+      throttle:
+        burstLimit: 100
+        rateLimit: 10
+  environment:
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    USERS_TABLE: users-${self:provider.stage}
+    CATEGORIES_TABLE: categories-${self:provider.stage}
+    NOTIFICATIONS_TABLE: notifications-${self:provider.stage}
+    EVENTS_TABLE: events-${self:provider.stage}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:*
+            - sqs:*
+            - s3:*
+          Resource:
+            - Fn::GetAtt:
+                - UsuariosTable
+                - Arn
+            - Fn::GetAtt:
+                - CategoriesTable
+                - Arn
+            - Fn::GetAtt:
+                - NotificationsTable
+                - Arn
+            - Fn::GetAtt:
+                - EventsTable
+                - Arn
+functions:
+  - ${file(serverless/user/functions.yml)}
+  - ${file(serverless/category/functions.yml)}
+  - ${file(serverless/notification/functions.yml)}
+  - ${file(serverless/event/functions.yml)}
+resources:
+  - ${file(serverless/user/resources.yml)}
+  - ${file(serverless/category/resources.yml)}
+  - ${file(serverless/notification/resources.yml)}
+  - ${file(serverless/event/resources.yml)}

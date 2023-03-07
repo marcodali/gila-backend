@@ -1,0 +1,26 @@
+[
+	{
+		"id": "dark",
+		"categoryList": "girl",
+		"channelList": "room",
+		"userList": "generally"
+	},
+	{
+		"id": "practice",
+		"categoryList": "root",
+		"channelList": "where",
+		"userList": "contain"
+	},
+	{
+		"id": "depth",
+		"categoryList": "paper",
+		"channelList": "face",
+		"userList": "salmon"
+	},
+	{
+		"id": "track",
+		"categoryList": "them",
+		"channelList": "price",
+		"userList": "it"
+	}
+]

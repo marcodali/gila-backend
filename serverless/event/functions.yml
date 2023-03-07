@@ -1,0 +1,40 @@
+createEvent:
+  handler: src/functions/event/createEvent.handler
+  events:
+    - http:
+        method: post
+        path: events
+        cors: true
+        private: true
+getAllEvents:
+  handler: src/functions/event/getAllEvents.handler
+  events:
+    - http:
+        method: get
+        path: events
+        cors: true
+        private: true
+getEvent:
+  handler: src/functions/event/getEvent.handler
+  events:
+    - http:
+        method: get
+        path: events/{id}
+        cors: true
+        private: true
+updateEvent:
+  handler: src/functions/event/updateEvent.handler
+  events:
+    - http:
+        method: put
+        path: events/{id}
+        cors: true
+        private: true
+deleteEvent:
+  handler: src/functions/event/deleteEvent.handler
+  events:
+    - http:
+        method: delete
+        path: events/{id}
+        cors: true
+        private: true

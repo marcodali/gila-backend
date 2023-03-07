@@ -1,0 +1,190 @@
+_type: export
+__export_format: 4
+__export_date: 2023-03-07T17:32:43.662Z
+__export_source: insomnia.desktop.app:v2022.7.1
+resources:
+  - _id: wrk_59669c6e2236420eab91be117764a195
+    parentId: null
+    modified: 1678210363663
+    created: 1678210363662
+    name: Gila-backend
+    description: ""
+    scope: collection
+    _type: workspace
+  - _id: env_84119d9d8fda44d7a07d071de003b90c
+    parentId: wrk_59669c6e2236420eab91be117764a195
+    modified: 1678210363663
+    created: 1678210363662
+    name: Base Environment
+    data: {}
+    dataPropertyOrder: null
+    color: null
+    isPrivate: false
+    metaSortKey: -358000000
+    _type: environment
+  - _id: spc_c48a75a973144f2894bd7b6427cdc5cf
+    parentId: wrk_59669c6e2236420eab91be117764a195
+    modified: 1678210363663
+    created: 1678210363662
+    fileName: Gila-backend
+    contents: ""
+    contentType: yaml
+    _type: api_spec
+  - _id: fld_c05e6cf8d3b647f7a7ec8567600ef540
+    parentId: wrk_59669c6e2236420eab91be117764a195
+    modified: 1678210363663
+    created: 1678210363662
+    name: Event
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -971000000
+    _type: request_group
+  - _id: req_fdfb6e76146d4c339bf172380a4111d7
+    parentId: fld_c05e6cf8d3b647f7a7ec8567600ef540
+    modified: 1678210363663
+    created: 1678210363662
+    url: "{{ _.amazonURL }}/{{ _.stage }}/events"
+    name: Event
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: >-
+        {
+        	"name": "Elizabeth",
+        	"city": "Medellin",
+        	"age": 23,
+        	"description": "Me encanta bailar salsa",
+        	"activities": ["d92b4a14-def9-4df9-91f3-6b2e021c0d36"],
+        	"phone": "5544623411",
+        	"email": "eli.medallo@gmail.com"
+        }
+    parameters: []
+    headers:
+      - id: pair_1b556ff70b7c4448896ea6dc6551518e
+        name: x-api-key
+        value: "{{ _.apiKey }}"
+        description: ""
+      - name: Content-Type
+        value: application/json
+    authentication: {}
+    metaSortKey: -651000000
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_80d7640ea97f4a72a5d11b3361e18524
+    parentId: fld_c05e6cf8d3b647f7a7ec8567600ef540
+    modified: 1678210363663
+    created: 1678210363662
+    url: "{{ _.amazonURL }}/{{ _.stage
+      }}/events/my-id"
+    name: Event
+    description: ""
+    method: PUT
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"phone": "552362231",
+        	"email": "geral.medallo@gmail.com"
+        }
+    parameters: []
+    headers:
+      - id: pair_1b556ff70b7c4448896ea6dc6551518e
+        name: x-api-key
+        value: "{{ _.apiKey }}"
+        description: ""
+      - name: Content-Type
+        value: application/json
+    authentication: {}
+    metaSortKey: -807000000
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_8e31cc1166b741bc939a0903e8202818
+    parentId: fld_c05e6cf8d3b647f7a7ec8567600ef540
+    modified: 1678210363663
+    created: 1678210363662
+    url: "{{ _.amazonURL }}/{{ _.stage }}/events"
+    name: All Events
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_1b556ff70b7c4448896ea6dc6551518e
+        name: x-api-key
+        value: "{{ _.apiKey }}"
+        description: ""
+    authentication: {}
+    metaSortKey: -132000000
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_7a14e5f306c1435baf3bc10b6cd9cb38
+    parentId: fld_c05e6cf8d3b647f7a7ec8567600ef540
+    modified: 1678210363663
+    created: 1678210363662
+    url: "{{ _.amazonURL }}/{{ _.stage
+      }}/events/my-id"
+    name: Event ID
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_1b556ff70b7c4448896ea6dc6551518e
+        name: x-api-key
+        value: "{{ _.apiKey }}"
+        description: ""
+    authentication: {}
+    metaSortKey: -873000000
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_f32e879452794ed981e1541d7d27ea61
+    parentId: fld_c05e6cf8d3b647f7a7ec8567600ef540
+    modified: 1678210363663
+    created: 1678210363662
+    url: "{{ _.amazonURL }}/{{ _.stage }}/events/my-id"
+    name: Event ID
+    description: ""
+    method: DELETE
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_1b556ff70b7c4448896ea6dc6551518e
+        name: x-api-key
+        value: "{{ _.apiKey }}"
+        description: ""
+    authentication: {}
+    metaSortKey: -803000000
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request

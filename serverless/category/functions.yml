@@ -1,0 +1,40 @@
+createCategory:
+  handler: src/functions/category/createCategory.handler
+  events:
+    - http:
+        method: post
+        path: categories
+        cors: true
+        private: true
+getAllCategories:
+  handler: src/functions/category/getAllCategories.handler
+  events:
+    - http:
+        method: get
+        path: categories
+        cors: true
+        private: true
+getCategory:
+  handler: src/functions/category/getCategory.handler
+  events:
+    - http:
+        method: get
+        path: categories/{id}
+        cors: true
+        private: true
+updateCategory:
+  handler: src/functions/category/updateCategory.handler
+  events:
+    - http:
+        method: put
+        path: categories/{id}
+        cors: true
+        private: true
+deleteCategory:
+  handler: src/functions/category/deleteCategory.handler
+  events:
+    - http:
+        method: delete
+        path: categories/{id}
+        cors: true
+        private: true
