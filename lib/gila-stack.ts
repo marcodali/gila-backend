@@ -39,22 +39,41 @@ export class GilaStack extends Stack {
     }
 
     // Create a Lambda function for each of the user CRUD operations
-    const getAllUsers = new NodejsFunction(this, 'getAllUsers', {
-      entry: join(__dirname + '/../', 'lambdas', 'users', 'get-all.ts'),
-      ...nodeJsFunctionProps,
-    });
     const createUser = new NodejsFunction(this, 'createUser', {
       entry: join(__dirname + '/../', 'lambdas', 'users', 'create.ts'),
       ...nodeJsFunctionProps,
     });
+    const deleteUser = new NodejsFunction(this, 'deleteUser', {
+      entry: join(__dirname + '/../', 'lambdas', 'users', 'delete.ts'),
+      ...nodeJsFunctionProps,
+    });
+    const getAllUsers = new NodejsFunction(this, 'getAllUsers', {
+      entry: join(__dirname + '/../', 'lambdas', 'users', 'get-all.ts'),
+      ...nodeJsFunctionProps,
+    });
+    const getOneUser = new NodejsFunction(this, 'getOneUser', {
+      entry: join(__dirname + '/../', 'lambdas', 'users', 'get-one.ts'),
+      ...nodeJsFunctionProps,
+    });
+    const updateUser = new NodejsFunction(this, 'updateUser', {
+      entry: join(__dirname + '/../', 'lambdas', 'users', 'update.ts'),
+      ...nodeJsFunctionProps,
+    });
+    
 
     // Grant the Lambda function access to the DynamoDB table
-    usersDynamoTable.grantReadWriteData(getAllUsers);
-    usersDynamoTable.grantReadWriteData(createUser);
+    usersDynamoTable.grantWriteData(createUser);
+    usersDynamoTable.grantReadWriteData(deleteUser);
+    usersDynamoTable.grantReadData(getAllUsers);
+    usersDynamoTable.grantReadData(getOneUser);
+    usersDynamoTable.grantReadWriteData(updateUser);
 
     // Integrate the Lambda functions with the API Gateway resource
-    const userGetAllIntegration = new LambdaIntegration(getAllUsers);
     const userCreateIntegration = new LambdaIntegration(createUser);
+    const userDeleteIntegration = new LambdaIntegration(deleteUser);
+    const userGetAllIntegration = new LambdaIntegration(getAllUsers);
+    const userGetOneIntegration = new LambdaIntegration(getOneUser);
+    const userUpdateIntegration = new LambdaIntegration(updateUser);
 
     // Create an API Gateway resource for each of the CRUD operations
     const api = new RestApi(this, 'gilaApi', {
@@ -67,9 +86,9 @@ export class GilaStack extends Stack {
     addCorsOptions(users);
 
     const singleUser = users.addResource('{id}');
-    //singleUser.addMethod('GET', userGetOneIntegration);
-    //singleUser.addMethod('PATCH', userUpdateOneIntegration);
-    //singleUser.addMethod('DELETE', userDeleteOneIntegration);
+    singleUser.addMethod('GET', userGetOneIntegration);
+    singleUser.addMethod('PATCH', userUpdateIntegration);
+    singleUser.addMethod('DELETE', userDeleteIntegration);
     addCorsOptions(singleUser);
   }
 }
