@@ -7,9 +7,9 @@
   "scripts": {
     "postinstall": "(cd lambdas && npm install);",
     "build": "tsc",
-    "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "clean": "./clean.sh"
   },
   "devDependencies": {
     "@types/jest": "^29.5.1",
@@ -24,5 +24,6 @@
   "dependencies": {
     "aws-cdk-lib": "2.84.0",
     "constructs": "^10.0.0"
-  }
+  },
+  "license": "UNLICENSED"
 }

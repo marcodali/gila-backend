@@ -9,66 +9,68 @@ export class GilaStack extends Stack {
   constructor(app: App, id: string) {
     super(app, id);
 
-    const dynamoTable = new Table(this, 'items', {
+    const usersDynamoTable = new Table(this, 'users', {
       partitionKey: {
-        name: 'itemId',
+        name: 'userId',
         type: AttributeType.STRING
       },
-      tableName: 'items',
+      tableName: 'users',
 
       /**
        * The default removal policy is RETAIN, which means that cdk destroy will not attempt to delete
        * the new table, and it will remain in your account until manually deleted. By setting the policy to
        * DESTROY, cdk destroy will delete the table (even if it has data in it)
        */
-      removalPolicy: RemovalPolicy.DESTROY, // NOT recommended for production code
+      removalPolicy: RemovalPolicy.DESTROY,
     });
 
     const nodeJsFunctionProps: NodejsFunctionProps = {
       bundling: {
         externalModules: [
-          'aws-sdk', // Use the 'aws-sdk' available in the Lambda runtime
+          'aws-sdk',
         ],
       },
       depsLockFilePath: join(__dirname + '/../', 'lambdas', 'package-lock.json'),
       environment: {
-        PRIMARY_KEY: 'itemId',
-        TABLE_NAME: dynamoTable.tableName,
+        PRIMARY_KEY: 'userId',
+        TABLE_NAME: usersDynamoTable.tableName,
       },
       runtime: Runtime.NODEJS_14_X,
     }
 
-    // Create a Lambda function for each of the CRUD operations
-    const getAllLambda = new NodejsFunction(this, 'getAllItemsFunction', {
-      entry: join(__dirname + '/../', 'lambdas', 'get-all.ts'),
+    // Create a Lambda function for each of the user CRUD operations
+    const getAllUsers = new NodejsFunction(this, 'getAllUsers', {
+      entry: join(__dirname + '/../', 'lambdas', 'users', 'get-all.ts'),
       ...nodeJsFunctionProps,
     });
-    const createOneLambda = new NodejsFunction(this, 'createItemFunction', {
-      entry: join(__dirname + '/../', 'lambdas', 'create.ts'),
+    const createUser = new NodejsFunction(this, 'createUser', {
+      entry: join(__dirname + '/../', 'lambdas', 'users', 'create.ts'),
       ...nodeJsFunctionProps,
     });
 
-    // Grant the Lambda function read access to the DynamoDB table
-    dynamoTable.grantReadWriteData(getAllLambda);
-    dynamoTable.grantReadWriteData(createOneLambda);
+    // Grant the Lambda function access to the DynamoDB table
+    usersDynamoTable.grantReadWriteData(getAllUsers);
+    usersDynamoTable.grantReadWriteData(createUser);
 
     // Integrate the Lambda functions with the API Gateway resource
-    const getAllIntegration = new LambdaIntegration(getAllLambda);
-    const createOneIntegration = new LambdaIntegration(createOneLambda);
-
+    const userGetAllIntegration = new LambdaIntegration(getAllUsers);
+    const userCreateIntegration = new LambdaIntegration(createUser);
 
     // Create an API Gateway resource for each of the CRUD operations
-    const api = new RestApi(this, 'itemsApi', {
-      restApiName: 'Items Service'
+    const api = new RestApi(this, 'gilaApi', {
+      restApiName: 'Gila Service'
     });
 
-    const items = api.root.addResource('items');
-    items.addMethod('GET', getAllIntegration);
-    items.addMethod('POST', createOneIntegration);
-    addCorsOptions(items);
+    const users = api.root.addResource('users');
+    users.addMethod('GET', userGetAllIntegration);
+    users.addMethod('POST', userCreateIntegration);
+    addCorsOptions(users);
 
-    const singleItem = items.addResource('{id}');
-    addCorsOptions(singleItem);
+    const singleUser = users.addResource('{id}');
+    //singleUser.addMethod('GET', userGetOneIntegration);
+    //singleUser.addMethod('PATCH', userUpdateOneIntegration);
+    //singleUser.addMethod('DELETE', userDeleteOneIntegration);
+    addCorsOptions(singleUser);
   }
 }
 

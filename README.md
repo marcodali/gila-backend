@@ -30,7 +30,7 @@ DynamoDB as storage for:
 * GET /events/:id
 * POST /events/
 
-## Posible Bottlenecks
+## Possible Bottlenecks
 
 * Create new event
     * Solution: SQS
@@ -40,8 +40,8 @@ DynamoDB as storage for:
 ## Useful commands
 
 * `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
 * `npm run test`    perform the jest unit tests
 * `cdk deploy`      deploy this stack to your default AWS account/region
 * `cdk diff`        compare deployed stack with current state
 * `cdk synth`       emits the synthesized CloudFormation template
+* `cdk destroy`     Removes all the resources deployed at AWS for this project
