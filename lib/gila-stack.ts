@@ -1,122 +1,125 @@
-import { IResource, LambdaIntegration, MockIntegration, PassthroughBehavior, RestApi } from 'aws-cdk-lib/aws-apigateway';
-import { AttributeType, Table } from 'aws-cdk-lib/aws-dynamodb';
-import { Runtime } from 'aws-cdk-lib/aws-lambda';
-import { App, Stack, RemovalPolicy } from 'aws-cdk-lib';
+import { LambdaIntegration, RestApi } from 'aws-cdk-lib/aws-apigateway';
+import { App, Stack } from 'aws-cdk-lib';
+import { Table } from 'aws-cdk-lib/aws-dynamodb';
 import { NodejsFunction, NodejsFunctionProps } from 'aws-cdk-lib/aws-lambda-nodejs';
-import { join } from 'path'
+import { join } from 'path';
+import {
+  getDirectories,
+  getFiles,
+  DynamoTable,
+  nodeFnProps,
+  addCorsOptions,
+  matchNormalizedNameWithHTTPVerb,
+} from './common';
+
+type entityTable = {
+  [key: string]: Table;
+}
+
+type entityFnProps = {
+  [key: string]: NodejsFunctionProps;
+}
+
+type entityNodejsFunction = {
+  [key: string]: Map<string, NodejsFunction>;
+}
 
 export class GilaStack extends Stack {
   constructor(app: App, id: string) {
     super(app, id);
 
-    const usersDynamoTable = new Table(this, 'users', {
-      partitionKey: {
-        name: 'userId',
-        type: AttributeType.STRING
-      },
-      tableName: 'users',
+    /**
+     * read all folder names inside lambdas directory,
+     * exclude of course node_modules/
+     */
+    const myEntitiesTable: entityTable = {};
+    const myEntitiesFnProps: entityFnProps = {};
+    const myEntitiesNodejsFunction: entityNodejsFunction = {};
 
-      /**
-       * The default removal policy is RETAIN, which means that cdk destroy will not attempt to delete
-       * the new table, and it will remain in your account until manually deleted. By setting the policy to
-       * DESTROY, cdk destroy will delete the table (even if it has data in it)
-       */
-      removalPolicy: RemovalPolicy.DESTROY,
-    });
-
-    const nodeJsFunctionProps: NodejsFunctionProps = {
-      bundling: {
-        externalModules: [
-          'aws-sdk',
-        ],
-      },
-      depsLockFilePath: join(__dirname + '/../', 'lambdas', 'package-lock.json'),
-      environment: {
-        PRIMARY_KEY: 'userId',
-        TABLE_NAME: usersDynamoTable.tableName,
-      },
-      runtime: Runtime.NODEJS_14_X,
-    }
-
-    // Create a Lambda function for each of the user CRUD operations
-    const createUser = new NodejsFunction(this, 'createUser', {
-      entry: join(__dirname + '/../', 'lambdas', 'users', 'create.ts'),
-      ...nodeJsFunctionProps,
-    });
-    const deleteUser = new NodejsFunction(this, 'deleteUser', {
-      entry: join(__dirname + '/../', 'lambdas', 'users', 'delete.ts'),
-      ...nodeJsFunctionProps,
-    });
-    const getAllUsers = new NodejsFunction(this, 'getAllUsers', {
-      entry: join(__dirname + '/../', 'lambdas', 'users', 'get-all.ts'),
-      ...nodeJsFunctionProps,
-    });
-    const getOneUser = new NodejsFunction(this, 'getOneUser', {
-      entry: join(__dirname + '/../', 'lambdas', 'users', 'get-one.ts'),
-      ...nodeJsFunctionProps,
-    });
-    const updateUser = new NodejsFunction(this, 'updateUser', {
-      entry: join(__dirname + '/../', 'lambdas', 'users', 'update.ts'),
-      ...nodeJsFunctionProps,
-    });
+    const entities = getDirectories(join(__dirname, '..', 'lambdas'));
+    const tables = entities.map(
+      entity => DynamoTable(this, entity, `${entity}Id`)
+    );
+    const props = entities.map(
+      (entity, index) => nodeFnProps(`${entity}Id`, tables[index])
+    );
     
+    entities.map((entity, index) => myEntitiesTable[entity] = tables[index]);
+    entities.map((entity, index) => myEntitiesFnProps[entity] = props[index]);
 
-    // Grant the Lambda function access to the DynamoDB table
-    usersDynamoTable.grantWriteData(createUser);
-    usersDynamoTable.grantReadWriteData(deleteUser);
-    usersDynamoTable.grantReadData(getAllUsers);
-    usersDynamoTable.grantReadData(getOneUser);
-    usersDynamoTable.grantReadWriteData(updateUser);
+    /**
+     * Create a Lambda function for each of the user CRUD operations,
+     * for every entity folder read the filenames inside
+     * and create a nodejs function with it
+     */
+    entities.map(entity => {
+      const filenameFnMap = new Map<string, NodejsFunction>();
+      getFiles(join(__dirname, '..', 'lambdas', entity))
+        .map(filename => {
+          let normalizedName: string;
+          if (filename.split('-').length > 1) {
+            normalizedName = `${entity}${
+              filename
+                .split('-').map(x => x[0].toUpperCase() + x.slice(1)).join('')
+            }`
+          } else {
+            normalizedName = `${entity}${
+              filename[0].toUpperCase() + filename.slice(1)
+            }`;
+          }
+          filenameFnMap.set(normalizedName, new NodejsFunction(
+            this,
+            normalizedName,
+            {
+              entry: join(__dirname, '..', 'lambdas', entity, `${filename}.ts`),
+              ...myEntitiesFnProps[entity],
+            },
+          ));
+        });
+      myEntitiesNodejsFunction[entity] = filenameFnMap;
+    });
 
-    // Integrate the Lambda functions with the API Gateway resource
-    const userCreateIntegration = new LambdaIntegration(createUser);
-    const userDeleteIntegration = new LambdaIntegration(deleteUser);
-    const userGetAllIntegration = new LambdaIntegration(getAllUsers);
-    const userGetOneIntegration = new LambdaIntegration(getOneUser);
-    const userUpdateIntegration = new LambdaIntegration(updateUser);
+    /**
+     * For very entity; grant lambda functions access
+     * to their respective DynamoDB tables
+     */
+    entities.map(entity => {
+      for (const nodeFunction of myEntitiesNodejsFunction[entity].values()) {
+        myEntitiesTable[entity].grantReadWriteData(nodeFunction);
+      }
+    });
 
-    // Create an API Gateway resource for each of the CRUD operations
+    // Create a unique API Gateway resource for the stack
     const api = new RestApi(this, 'gilaApi', {
       restApiName: 'Gila Service'
     });
 
-    const users = api.root.addResource('users');
-    users.addMethod('GET', userGetAllIntegration);
-    users.addMethod('POST', userCreateIntegration);
-    addCorsOptions(users);
+    /**
+     * Integrate the Lambda functions with the API Gateway resource
+     */
+    entities.map(entity => {
+      const myGenericResource = api.root.addResource(entity);
+      // associate the lamda integration for every generic nodejsFunction
+      for (const [normalizedName, nodeFunction] of myEntitiesNodejsFunction[entity]) {
+        if (!normalizedName.endsWith('One')) {
+          myGenericResource.addMethod(
+            matchNormalizedNameWithHTTPVerb(entity, normalizedName),
+            new LambdaIntegration(nodeFunction),
+          );
+        }
+      }
+      addCorsOptions(myGenericResource);
 
-    const singleUser = users.addResource('{id}');
-    singleUser.addMethod('GET', userGetOneIntegration);
-    singleUser.addMethod('PATCH', userUpdateIntegration);
-    singleUser.addMethod('DELETE', userDeleteIntegration);
-    addCorsOptions(singleUser);
+      const singleResource = myGenericResource.addResource('{id}');
+      for (const [normalizedName, nodeFunction] of myEntitiesNodejsFunction[entity]) {
+        if (normalizedName.endsWith('One')) {
+          singleResource.addMethod(
+            matchNormalizedNameWithHTTPVerb(entity, normalizedName),
+            new LambdaIntegration(nodeFunction),
+          );
+        }
+      }
+      addCorsOptions(singleResource);
+    });
   }
-}
-
-export function addCorsOptions(apiResource: IResource) {
-  apiResource.addMethod('OPTIONS', new MockIntegration({
-    integrationResponses: [{
-      statusCode: '200',
-      responseParameters: {
-        'method.response.header.Access-Control-Allow-Headers': "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
-        'method.response.header.Access-Control-Allow-Origin': "'*'",
-        'method.response.header.Access-Control-Allow-Credentials': "'false'",
-        'method.response.header.Access-Control-Allow-Methods': "'OPTIONS,GET,PUT,POST,DELETE'",
-      },
-    }],
-    passthroughBehavior: PassthroughBehavior.NEVER,
-    requestTemplates: {
-      "application/json": "{\"statusCode\": 200}"
-    },
-  }), {
-    methodResponses: [{
-      statusCode: '200',
-      responseParameters: {
-        'method.response.header.Access-Control-Allow-Headers': true,
-        'method.response.header.Access-Control-Allow-Methods': true,
-        'method.response.header.Access-Control-Allow-Credentials': true,
-        'method.response.header.Access-Control-Allow-Origin': true,
-      },
-    }]
-  })
 }
