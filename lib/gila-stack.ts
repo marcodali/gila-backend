@@ -40,11 +40,17 @@ export class GilaStack extends Stack {
     const tables = entities.map(
       entity => DynamoTable(this, entity, `${entity}Id`)
     );
-    const props = entities.map(
-      (entity, index) => nodeFnProps(`${entity}Id`, tables[index])
-    );
-    
     entities.map((entity, index) => myEntitiesTable[entity] = tables[index]);
+    
+    const props = entities.map(
+      (entity, index) => {
+        if (entity == 'events') {
+          // lambda events entity should have access to all dynamoDB tables
+          return nodeFnProps(`${entity}Id`, tables[index], myEntitiesTable);
+        }
+        return nodeFnProps(`${entity}Id`, tables[index]);
+      }
+    );
     entities.map((entity, index) => myEntitiesFnProps[entity] = props[index]);
 
     /**
@@ -86,6 +92,13 @@ export class GilaStack extends Stack {
     entities.map(entity => {
       for (const nodeFunction of myEntitiesNodejsFunction[entity].values()) {
         myEntitiesTable[entity].grantReadWriteData(nodeFunction);
+      }
+
+      // all databases should grant access to events lambdas
+      if (entity != 'events') {
+        for (const nodeFunction of myEntitiesNodejsFunction['events'].values()) {
+          myEntitiesTable[entity].grantReadWriteData(nodeFunction);
+        }
       }
     });
 

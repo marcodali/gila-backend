@@ -1,9 +1,9 @@
 openapi: "3.0.1"
 info:
   title: "Gila Service"
-  version: "2023-06-18T02:38:52Z"
+  version: "2023-06-19T03:05:20Z"
 servers:
-- url: "https://tb0b04vjfj.execute-api.us-west-1.amazonaws.com/{basePath}"
+- url: "https://ug0qm3ilii.execute-api.us-west-1.amazonaws.com/{basePath}"
   variables:
     basePath:
       default: "prod"
