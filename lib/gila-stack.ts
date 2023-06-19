@@ -41,7 +41,7 @@ export class GilaStack extends Stack {
       entity => DynamoTable(this, entity, `${entity}Id`)
     );
     entities.map((entity, index) => myEntitiesTable[entity] = tables[index]);
-    
+
     const props = entities.map(
       (entity, index) => {
         if (entity == 'events') {
@@ -64,14 +64,12 @@ export class GilaStack extends Stack {
         .map(filename => {
           let normalizedName: string;
           if (filename.split('-').length > 1) {
-            normalizedName = `${entity}${
-              filename
+            normalizedName = `${entity}${filename
                 .split('-').map(x => x[0].toUpperCase() + x.slice(1)).join('')
-            }`
+              }`
           } else {
-            normalizedName = `${entity}${
-              filename[0].toUpperCase() + filename.slice(1)
-            }`;
+            normalizedName = `${entity}${filename[0].toUpperCase() + filename.slice(1)
+              }`;
           }
           filenameFnMap.set(normalizedName, new NodejsFunction(
             this,

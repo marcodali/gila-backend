@@ -13,7 +13,7 @@ import { join } from 'path';
 
 type entityTable = {
   [key: string]: Table;
-}
+};
 
 export const getDirectories = (path: string) =>
   readdirSync(path, { withFileTypes: true })
