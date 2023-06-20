@@ -2,9 +2,9 @@ openapi: "3.0.1"
 info:
   title: "Gila Service"
   description: "Back End - Notification APIs"
-  version: "2023-06-20T07:04:52Z"
+  version: "2023-06-20T10:49:09Z"
 servers:
-- url: "https://wkgp0hxs3i.execute-api.us-west-1.amazonaws.com/{basePath}"
+- url: "https://j7vdzwpkqf.execute-api.us-west-1.amazonaws.com/{basePath}"
   variables:
     basePath:
       default: "dev"
@@ -118,7 +118,7 @@ paths:
               schema:
                 type: "string"
           content: {}
-  /categories/{id}:
+  /users/{id}:
     get:
       parameters:
       - name: "id"
@@ -164,7 +164,7 @@ paths:
         required: true
         schema:
           type: "string"
-  /users/{id}:
+  /categories/{id}:
     get:
       parameters:
       - name: "id"

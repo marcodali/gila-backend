@@ -36,7 +36,7 @@ export const initializeCategoriesDatabase = async () => {
   
 export const initializeNotificationsDatabase = async () => {
     const bodys = ["SMS", "E-mail", "Push Notification"].map(name => JSON.stringify({
-      name,
+      type: name,
       subscribedUsers: [],
       endpoint: `https://api.${name.replace(/[^a-zA-Z]/g, "").toLowerCase()}.com`,
       apiKey: crypto.randomBytes(15).toString('hex'),
@@ -76,4 +76,22 @@ export const clearNotificationsDatabase = async () => {
     }notifications/${notification.notificationsId}`, {
       method: 'DELETE',
     })));
+};
+
+export const clearMessagesDatabase = async () => {
+  const messages = await (await fetch(`${GILA_API}messages`)).json();
+  await Promise.all(messages.map((message: any) => fetch(`${
+    GILA_API
+  }messages/${message.messagesId}`, {
+    method: 'DELETE',
+  })));
+};
+
+export const clearEventsDatabase = async () => {
+  const events = await (await fetch(`${GILA_API}events`)).json();
+  await Promise.all(events.map((event: any) => fetch(`${
+    GILA_API
+  }events/${event.eventsId}`, {
+    method: 'DELETE',
+  })));
 };

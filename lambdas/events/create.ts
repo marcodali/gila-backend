@@ -63,8 +63,9 @@ export const handler = async (event: any = {}): Promise<any> => {
       Item: myMessage,
     }).promise();
   } catch (dbError: any) {
+    console.error(dbError);
     const errorResponse = dbError.code === 'ValidationException' && dbError.message.includes('reserved keyword') ?
-      DYNAMODB_EXECUTION_ERROR : RESERVED_RESPONSE;
+      RESERVED_RESPONSE: DYNAMODB_EXECUTION_ERROR;
     return { statusCode: 500, body: errorResponse };
   }
 
@@ -98,23 +99,55 @@ export const handler = async (event: any = {}): Promise<any> => {
     user.channels.forEach((channelId: string) => myChannels[channelId].push(usersId));
   }
   
-  // Step [3]
+  // Step [4]
+  const counterChannels: string[] = [];
+  let counterUsers = 0;
+  const eventsCreatePromises = [];
   for (const key of Object.keys(myChannels)) {
-    console.log('key=', key, 'value=', myChannels[key]);
+    const channel = responseNotifications.Items?.find(
+      notification => notification.notificationsId == key
+    );
+    counterUsers += myChannels[key].length
+    if (channel && myChannels[key].length > 0) {
+      counterChannels.push(channel.type);
+      console.log(
+        myChannels[key].length,
+        'users are waiting to recive the message from',
+        channel.type,
+        'channel',
+      );
+      const eventParams = {
+        TableName: TABLE_NAME,
+        Item: {
+          [PRIMARY_KEY]: uuidv4(),
+          createdAt: (new Date()).toLocaleString(),
+          messagesId: myMessage.messagesId,
+          messageContent: myMessage.content,
+          channelType: channel.type,
+          notificationsId: channel.notificationsId,
+          categoriesId: categoryFound.categoriesId,
+          category: categoryFound.name,
+          usersNotified: myChannels[key],
+        },
+      };
+      eventsCreatePromises.push(db.put(eventParams).promise())
+    }
   }
-
-  item[PRIMARY_KEY] = uuidv4();
-  const params = {
-    TableName: TABLE_NAME,
-    Item: item
-  };
 
   try {
-    await db.put(params).promise();
-    return { statusCode: 201, body: item };
+    await Promise.all(eventsCreatePromises);
   } catch (dbError: any) {
+    console.error(dbError);
     const errorResponse = dbError.code === 'ValidationException' && dbError.message.includes('reserved keyword') ?
-      DYNAMODB_EXECUTION_ERROR : RESERVED_RESPONSE;
+      RESERVED_RESPONSE: DYNAMODB_EXECUTION_ERROR;
     return { statusCode: 500, body: errorResponse };
   }
+
+  // final operational report
+  return {
+    statusCode: 201,
+    body: `${counterUsers} total users have been notified through ${
+      counterChannels.length
+    } notification channels (${counterChannels})`
+  };
 };
