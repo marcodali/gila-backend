@@ -1,17 +1,68 @@
-import * as cdk from 'aws-cdk-lib';
-import { Template, Match } from 'aws-cdk-lib/assertions';
-import * as Gila from '../lib/gila-stack';
+import * as cdkOutputs from '../cdk-outputs.json';
+import {
+  initializeUsersDatabase,
+  initializeCategoriesDatabase,
+  initializeNotificationsDatabase,
+  clearUsersDatabase,
+  clearCategoriesDatabase,
+  clearNotificationsDatabase,
+} from './database'
 
-test('SQS Queue and SNS Topic Created', () => {
-  const app = new cdk.App();
-  // WHEN
-  const stack = new Gila.GilaStack(app, 'MyTestStack');
-  // THEN
+const GILA_API = cdkOutputs.GilaStack.apiUrl;
 
-  const template = Template.fromStack(stack);
+beforeAll(() => {
+  return Promise.all([
+    initializeUsersDatabase(),
+    initializeCategoriesDatabase(),
+    initializeNotificationsDatabase(),
+  ]);
+});
 
-  template.hasResourceProperties('AWS::SQS::Queue', {
-    VisibilityTimeout: 300
+afterAll(() => {
+  return Promise.all([
+    clearUsersDatabase(),
+    clearCategoriesDatabase(),
+    clearNotificationsDatabase(),
+  ]);
+});
+
+describe('DynamoDB users table', () => {
+  test('should have 3 items', async () => {
+    const users = await (await fetch(`${GILA_API}users`)).json();
+    
+    expect(users.length).toBe(3);
   });
-  template.resourceCountIs('AWS::SNS::Topic', 1);
+
+  test('Romina, Mirna and Miruca should be the names', async () => {
+    const users = await (await fetch(`${GILA_API}users`)).json();
+    const names = users.map((user: any) => user.name);
+    
+    expect(names).toContain('Romina');
+    expect(names).toContain('Mirna');
+    expect(names).toContain('Miruca');
+  });
+});
+
+describe('DynamoDB categories table', () => {
+  test('Films, Sports and Finance should be present', async () => {
+    const categories = await (await fetch(`${GILA_API}categories`)).json();
+    const names = categories.map((category: any) => category.name);
+    
+    expect(categories.length).toBe(3);
+    expect(names).toEqual(expect.arrayContaining(["Films", "Sports", "Finance"]));
+  });
+});
+
+describe('DynamoDB notifications table', () => {
+  test('3 types of notifications should exists', async () => {
+    const notifications = await (await fetch(`${GILA_API}notifications`)).json();
+    const namesTogether = notifications
+      .map((category: any) => category.name)
+      .join('').toLowerCase();
+    
+    expect(notifications.length).toBe(3);
+    expect(namesTogether).toContain("sms");
+    expect(namesTogether).toContain("push");
+    expect(namesTogether).toContain("mail");
+  });
 });

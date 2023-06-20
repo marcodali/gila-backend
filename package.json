@@ -1,15 +1,12 @@
 {
   "name": "gila",
   "version": "0.1.0",
-  "bin": {
-    "gila": "bin/gila.js"
-  },
   "scripts": {
+    "clean": "./clean.sh",
     "postinstall": "(cd lambdas && npm install);",
     "build": "tsc",
-    "test": "jest",
-    "cdk": "cdk",
-    "clean": "./clean.sh"
+    "deploy": "cdk deploy --outputs-file ./cdk-outputs.json",
+    "test": "jest"
   },
   "devDependencies": {
     "@types/jest": "^29.5.1",

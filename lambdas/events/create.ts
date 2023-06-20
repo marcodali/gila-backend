@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 const TABLE_NAME = process.env.TABLE_NAME || '';
 const TABLE_CATEGORIES = process.env.TABLE_CATEGORIES || '';
-const TABLE_EVENTS = process.env.TABLE_EVENTS || '';
+const TABLE_MESSAGES = process.env.TABLE_MESSAGES || '';
 const TABLE_NOTIFICATIONS = process.env.TABLE_NOTIFICATIONS || '';
 const TABLE_USERS = process.env.TABLE_USERS || '';
 const PRIMARY_KEY = process.env.PRIMARY_KEY || '';
@@ -53,6 +53,21 @@ export const handler = async (event: any = {}): Promise<any> => {
     return { statusCode: 400, body: 'invalid request, you are missing the parameter message' };
   }
 
+  /**
+   * save the message for future references
+   */
+  const myMessage = { messagesId: uuidv4(), content: item.message };
+  try {
+    await db.put({
+      TableName: TABLE_MESSAGES,
+      Item: myMessage,
+    }).promise();
+  } catch (dbError: any) {
+    const errorResponse = dbError.code === 'ValidationException' && dbError.message.includes('reserved keyword') ?
+      DYNAMODB_EXECUTION_ERROR : RESERVED_RESPONSE;
+    return { statusCode: 500, body: errorResponse };
+  }
+
   // Step [2]
   const responseCategories = await db.scan({ TableName: TABLE_CATEGORIES }).promise();
   const categoryFound = responseCategories.Items?.find((category => category.name == item.category));
@@ -62,7 +77,7 @@ export const handler = async (event: any = {}): Promise<any> => {
         }, should be one of ${responseCategories.Items?.map(c => c.name)}`
     };
   }
-  const categoryUsersIds = new Set(categoryFound.users);
+  const categoryUsersIds = new Set(categoryFound.subscribedUsers);
 
   /**
    * Looking for users subscribed in the category inside the DB
@@ -82,7 +97,11 @@ export const handler = async (event: any = {}): Promise<any> => {
   for (const [usersId, user] of myAvailableUsers) {
     user.channels.forEach((channelId: string) => myChannels[channelId].push(usersId));
   }
-  console.log('channels are ready to send notifications', myChannels);
+  
+  // Step [3]
+  for (const key of Object.keys(myChannels)) {
+    console.log('key=', key, 'value=', myChannels[key]);
+  }
 
   item[PRIMARY_KEY] = uuidv4();
   const params = {
@@ -92,7 +111,7 @@ export const handler = async (event: any = {}): Promise<any> => {
 
   try {
     await db.put(params).promise();
-    return { statusCode: 201, body: '' };
+    return { statusCode: 201, body: item };
   } catch (dbError: any) {
     const errorResponse = dbError.code === 'ValidationException' && dbError.message.includes('reserved keyword') ?
       DYNAMODB_EXECUTION_ERROR : RESERVED_RESPONSE;

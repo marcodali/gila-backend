@@ -1,3 +1,4 @@
+import * as cdk from 'aws-cdk-lib';
 import { LambdaIntegration, RestApi } from 'aws-cdk-lib/aws-apigateway';
 import { App, Stack } from 'aws-cdk-lib';
 import { Table } from 'aws-cdk-lib/aws-dynamodb';
@@ -102,7 +103,11 @@ export class GilaStack extends Stack {
 
     // Create a unique API Gateway resource for the stack
     const api = new RestApi(this, 'gilaApi', {
-      restApiName: 'Gila Service'
+      restApiName: 'Gila Service',
+      deployOptions: {
+        stageName: 'dev',
+      },
+      description: 'Back End - Notification APIs'
     });
 
     /**
@@ -132,5 +137,8 @@ export class GilaStack extends Stack {
       }
       addCorsOptions(singleResource);
     });
+
+    // 👇 create an Output for the API URL
+    new cdk.CfnOutput(this, 'apiUrl', {value: api.url});
   }
 }
